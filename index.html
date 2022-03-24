@@ -4,11 +4,33 @@
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Document</title>
-   <link rel="shortcut icon" href="#">
+   <title>Rock Paper Scissors</title>
+   <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
 
+   <div class="container">
+      <div id="buttons">
+         <button id="rock">ROCK</button>
+         <button id="paper">PAPER</button>
+         <button id="scissors">SCISSORS</button>
+      </div>
+
+      <div id="scoreboard">
+         <div id="player" class="result">
+            <div class="name">Player</div>
+            <div class="score"></div>
+         </div>
+         <div id="computer" class="result">
+            <div class="name">Computer</div>
+            <div class="score"></div>
+         </div>
+      </div>
+      <div id="reset">
+         <button id="reset">RESET</button>
+      </div>
+   </div>
    <script src="./script.js"></script>
 </body>
 </html>
