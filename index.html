@@ -11,25 +11,48 @@
 <body>
 
    <div class="container">
+
       <div id="buttons">
          <button id="rock">ROCK</button>
          <button id="paper">PAPER</button>
          <button id="scissors">SCISSORS</button>
       </div>
 
+      <div id="battleBoard">
+         <span class="player choice">Player</span>
+         <span>versus</span>
+         <span class="computer choice">Computer</span>
+         <div id="outcome">Let's Play!</div>
+         <div id="message"></div>
+      </div>
+
       <div id="scoreboard">
-         <div id="player" class="result">
-            <div class="name">Player</div>
-            <div class="score"></div>
+         <div class="player score">
+            <h3 class="name">PLAYER</h3>
+            <div id="playerscore" class="display">0</div>
          </div>
-         <div id="computer" class="result">
-            <div class="name">Computer</div>
-            <div class="score"></div>
+         
+         <!-- <div class="spacer"></div> -->
+
+         <div id="center">
+            <div id="round">
+               <h4>ROUND</h4>
+               <div id="roundnumber" class="display">1</div>
+            </div>
+            <div id="emptyspace"></div>
+         </div>
+
+         <!-- <div class="spacer"></div> -->
+         <div class="computer score">
+            <h3 class="name">COMPUTER</h3>
+            <div id="computerscore" class="display">0</div>
          </div>
       </div>
+
       <div id="reset">
          <button id="reset">RESET</button>
       </div>
+
    </div>
    <script src="./script.js"></script>
 </body>

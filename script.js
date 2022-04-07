@@ -1,93 +1,164 @@
-
-function playRound( playerSelection, computerSelection) {
-   playerSelection = playerSelection[0].toUpperCase() + playerSelection.slice(1).toLowerCase();
-   
+function getRoundResult( playerSelection, computerSelection) {
+   let outcome = {
+      result: '',
+      text: ''
+   }
    if (playerSelection === computerSelection){
-      return 0;
-      // return `It's a Tie! You both threw ${playerSelection}`;
+      outcome.result = 'draw';
+      outcome.text = `${playerSelection} cancels ${computerSelection}`;
+      return outcome;
    }
-   let playerWins = (playerSelection === "Rock"     && computerSelection === "Scissors") ||
-                    (playerSelection === "Paper"    && computerSelection === "Rock") ||
-                    (playerSelection === "Scissors" && computerSelection === "Paper");
-   return ( playerWins ? 1 : -1 );
-}
 
-// function test_playRound() {
-//    console.log(playRound( "ROCK", "Rock" ));
-//    console.log(playRound( "Rock", "Paper" ));
-//    console.log(playRound( "Rock", "Scissors" ));
-//    console.log(playRound( "PaPEr", "Rock" ));
-//    console.log(playRound( "Paper", "Paper" ));
-//    console.log(playRound( "PaPer", "Scissors" ));
-//    console.log(playRound( "scissors", "Rock" ));
-//    console.log(playRound( "Scissors", "Paper" ));
-//    console.log(playRound( "Scissors", "Scissors" ));
-// }
 
-// Write a NEW function called game(). Call the playRound function 
-// inside of this one to play a 5 round game that keeps score and 
-// reports a winner or loser at the end. 
-function game() {
-   let playerWins = 0;
-   let computerWins = 0;
-   let computerResult = "undeclared";
-   let playerResult = "undeclared";
-   let gameResult = "undeclared";
-
-   for (let i = 1; i <= 5; i++ ){
-      playerResult = "undeclared";
-      computerResult = computerPlay();
-
-      while (["rock", "paper", "scissors"].includes(playerResult.toLowerCase()) == false) {
-         playerResult = prompt(`Round ${i}... Go!! (Rock Paper Scissors)`);
-      }   
-      
-      gameResult = playRound( playerResult, computerResult );
-
-      switch (gameResult) {
-         case 1 :
-            playerWins++;
-            console.log( `You win round ${i}. ${playerResult} beats ${computerResult}` );
-            break;
-         case -1 :     
-            computerWins++;
-            console.log( `You lose round ${i}. ${computerResult} beats ${playerResult}`);    
-            break;
-         default :
-            console.log( `You tied round ${i}. You both threw ${playerResult}` );
-      }
-   }
-   gameOver( playerWins, computerWins );
+   const playerWins = (playerSelection === "rock"     && computerSelection === "scissors") ||
+                       (playerSelection === "paper"    && computerSelection === "rock") ||
+                       (playerSelection === "scissors" && computerSelection === "paper");
    
+   let winningChoice, losingChoice;
+   let verb;
+
+   if (playerWins) {
+      outcome.result = 'win';
+      winningChoice = playerSelection.toUpperCase();
+      losingChoice = computerSelection.toUpperCase();
+   } else {
+      outcome.result = 'lose';
+      winningChoice = computerSelection.toUpperCase();
+      losingChoice = playerSelection.toUpperCase();
+   }
+   switch (winningChoice) {
+      case "ROCK": 
+         verb = 'breaks';
+         break;
+      case 'PAPER':
+         verb = 'covers';
+         break;
+      case 'SCISSORS':
+         verb = 'cuts';
+         break;      
+   }     
+   outcome.text = `${winningChoice.toUpperCase()} ${verb} ${losingChoice.toUpperCase()}`;
+   return outcome;
 }
 
-function gameOver( playerWins, computerWins ){
-   if (playerWins > computerWins) {
-      console.log( `You win the game ${playerWins} to ${computerWins}` );  
-   } else if (playerWins < computerWins) {
-      console.log( `You lose the game ${computerWins} to ${playerWins}` );  
+function showScore(playerScore, computerWins){
+   playerBoard = document.querySelector('#player .score');
+   playerBoard.textContent = playerScore;
+
+   computerBoard = document.querySelector('#computer .score');
+   computerBoard.textContent = computerWins;
+}
+
+function gameOver(playerScore, computerWins ){
+   if (playerScore > computerWins) {
+      displayResult( `You win the game ${playerScore} to ${computerWins}` );  
+   } else if (playerScore < computerWins) {
+      displayResult( `You lose the game ${computerWins} to ${playerScore}` );  
    } else {
-      console.log( `It ends in a tie. ${playerWins} each.` );
+      displayResult( `It ends in a tie. ${playerScore} each.` );
    }
 }
-
 
 function computerPlay() {
    let randomFloat = Math.random() * 3;
-   let play;
+   let selection = "undeclared";
    switch (Math.floor(randomFloat)) {
       case 0: 
-         play ="Rock";
+         selection = "rock";
          break;
       case 1:
-         play ="Paper";
+         selection = "paper";
          break;
       default:
-         play = "Scissors";
+         selection = "scissors";
          break;    
    }
-   return play;
+   return selection;
+}
+
+function logText(e) {
+   console.log(this.id);
+}
+
+function updateScoreboard(roundResult) {
+   switch (roundResult) {
+      case 'win': scoreboard.player++;
+            if (scoreboard.player === 5) scoreboard.gameover = true;
+            break;
+      case 'lose': scoreboard.computer++;
+            if (scoreboard.computer === 5) scoreboard.gameover = true;
+            break;
+      default: break;      
+   }
+   scoreboard.round++;
+}
+
+function updateBattleBoard(playerChoice, computerChoice, roundResult) {
+   const playerBoard = document.querySelector('#battleBoard .player');
+   playerBoard.textContent = `${playerChoice.toUpperCase()}`;
+
+   const computerBoard = document.querySelector('#battleBoard .computer');
+   computerBoard.textContent = `${computerChoice.toUpperCase()}`;
+
+   const resultBoard = document.querySelector('#outcome');
+   resultBoard.textContent = `${roundResult.result.toUpperCase()}`;
+
+   const resultMessage = document.querySelector('#message');
+   resultMessage.textContent = `${roundResult.text}`
 }
 
 
-game();
+function endGame() {
+   console.log('Game over');
+}
+
+function playRound(e) {
+   if (scoreboard.gameover) return;
+   const playerChoice = this.id;
+   const computerChoice = computerPlay();
+   
+   const roundResult = getRoundResult(playerChoice, computerChoice);
+   updateBattleBoard(playerChoice, computerChoice, roundResult);
+   updateScoreboard(roundResult.result);
+   updateDisplay();
+   if (scoreboard.gameover) {
+      endGame();
+   }
+}
+
+function resetGame() {
+   console.log('reset');
+   scoreboard.player = 0;
+   scoreboard.computer = 0;
+   scoreboard.round = 1;
+   scoreboard.gameover = false;
+   updateDisplay();
+}
+
+function updateDisplay() {
+   
+   const playerScoreboard = document.querySelector('#playerscore');
+   playerScoreboard.textContent = `${scoreboard.player}`;
+
+   const computerScoreboard = document.querySelector('#computerscore');
+   computerScoreboard.textContent = `${scoreboard.computer}`;
+
+   const currentRound = document.querySelector('#roundnumber');
+   currentRound.textContent = `${scoreboard.round}`
+}
+
+
+let scoreboard = {
+   player: 0,
+   computer: 0,
+   round: 0,
+   gameover: false
+}
+
+const buttons = document.querySelectorAll('#buttons>button');
+buttons.forEach(button => button.addEventListener('click', playRound));
+
+const reset = document.querySelector('button#reset');
+reset.addEventListener('click', resetGame);
+
+resetGame();
