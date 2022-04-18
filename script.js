@@ -104,12 +104,34 @@ function updateBattleBoard(playerChoice, computerChoice, roundResult) {
    resultBoard.textContent = `${roundResult.result.toUpperCase()}`;
 
    const resultMessage = document.querySelector('#message');
-   resultMessage.textContent = `${roundResult.text}`
+   resultMessage.textContent = `${roundResult.text}`;
 }
 
+// function clearBattleBoard
+function clearBattleBoard() {
+   const battleBoardSpans = document.querySelectorAll('#battleBoard > span');
+   battleBoardSpans.forEach( function(span) {
+      span.textContent = "";
+   });
+}
 
-function endGame() {
-   console.log('Game over');
+function resetBattleBoard() {
+   const emptyResult = {
+      result: '',
+      text: ''
+   }
+   updateBattleBoard("Player", "Computer", emptyResult);
+   const versus = document.querySelector('#versus');
+   versus.textContent = 'versus';
+}
+
+function endGame(gameResult) {
+   clearBattleBoard();
+   const gameOverMessage = {
+      result: gameResult,
+      text: "Play again?"
+   }
+   updateBattleBoard( "", "", gameOverMessage );
 }
 
 function playRound(e) {
@@ -122,12 +144,13 @@ function playRound(e) {
    updateScoreboard(roundResult.result);
    updateDisplay();
    if (scoreboard.gameover) {
-      endGame();
+      const gameResult = (scoreboard.player === 5) ? "WIN" : "LOSE";
+      endGame(`You ${gameResult}`);
    }
 }
 
 function resetGame() {
-   console.log('reset');
+   resetBattleBoard();
    scoreboard.player = 0;
    scoreboard.computer = 0;
    scoreboard.round = 1;
